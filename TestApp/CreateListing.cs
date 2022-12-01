@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Text.RegularExpressions;
 
+using System.IO; // Added for image to byte conversion (i.e. MemoryStream object in ImageToByte() )
+
 namespace TestApp
 {
     public partial class CreateListing : Form
@@ -109,32 +111,64 @@ namespace TestApp
                 return;// terminate early
             }
 
+
+            Image photo = new Bitmap(pictureBox1.ImageLocation);
+            byte[] pic = ImageToByte(photo, System.Drawing.Imaging.ImageFormat.Jpeg);
+
+
+
             //after input validation we need to save the input as a new entry in the Listing table
             SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
             con.Open();
-            string query = (@"BEGIN TRANSACTION; 
-                            INSERT INTO Listing (listingID, aID, cost, address, image, rooms, bathrooms) VALUES 
-                            (, " + accountID.ToString() + @", " + textBox2.Text + @", " + textBox1.Text + @", " +
-                            pictureBox1.ImageLocation + @", " + numericUpDown1.ToString() + @", " + numericUpDown2.ToString() + 
-                            @";
-                            COMMIT;");
-            SQLiteCommand cmd = new SQLiteCommand(query, con);
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = con;
+
+            cmnd.CommandText = String.Format("BEGIN TRANSACTION; INSERT INTO Listing ( aID, cost, address, image, rooms, bathrooms) VALUES (" + accountID.ToString() + @", " + textBox2.Text + @", '" + textBox1.Text + @"', @0," + numericUpDown1.Value.ToString() + @", " + numericUpDown2.Value.ToString() + @"); COMMIT;"); 
+            SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Binary);
+            param.Value = pic;
+            cmnd.Parameters.Add(param);
+            cmnd.ExecuteNonQuery();
+
+            //for debugging purposes only
+            /*string nq = ("SELECT * FROM Listing");
+
+            SQLiteCommand cmd = new SQLiteCommand(nq, con);
             //adapter
             //datatable
             DataTable dt = new DataTable();
             SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-            adapter.Update(dt); // could be wrong command but need to update data to the database somehow? 
+            adapter.Fill(dt);
 
-            foreach (DataRow row in dt.Rows)
-            {
-                foreach (DataColumn column in dt.Columns)
-                {
-                    MessageBox.Show(row[column].ToString());
-                }
-            }
+             foreach (DataRow row in dt.Rows) 
+             {
+                 foreach (DataColumn column in dt.Columns)
+                 {
+                     MessageBox.Show(row[column].ToString());
+                 }
+             }*/
 
             this.Hide();
             new SellMenu(accountID).Show();
         }
+
+
+
+        public byte[] ImageToByte(Image image, System.Drawing.Imaging.ImageFormat format)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                // Convert Image to byte[]
+                image.Save(ms, format);
+                byte[] imageBytes = ms.ToArray();
+                return imageBytes;
+            }
+        }
+
+
+
+
+
+
+
     }
 }

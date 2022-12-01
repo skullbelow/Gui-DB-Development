@@ -118,7 +118,8 @@ namespace TestApp
                     if (newRow[3].ToString() == "seller") //...take them to seller menu
                     {
                         this.Hide();
-                        new SellMenu((int)newRow[0]).Show();//THROWS LOGIN ERROR
+                        int account = Int32.Parse(newRow[0].ToString());
+                        new SellMenu(account).Show();//no longer throws login error
                     }
                 }
                 else
