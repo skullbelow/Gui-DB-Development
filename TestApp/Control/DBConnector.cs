@@ -24,7 +24,7 @@ namespace TestApp.Control
                     DROP TABLE IF EXISTS Listing;
                     DROP TABLE IF EXISTS Property;
                     DROP TABLE IF EXISTS Purchase;
-                    COMMIT;";
+                    COMMIT;"; //Drop existing tables
                     cmnd.CommandText = strSql;
                     cmnd.ExecuteNonQuery();
                     string table = @"CREATE TABLE [ACCOUNT]
@@ -32,7 +32,7 @@ namespace TestApp.Control
                                 , [name] TEXT NOT NULL UNIQUE        
                                 , [password] TEXT NOT NULL
                                 , [type] TEXT NOT NULL
-                                );"; // name and password added here
+                                );"; // Account table created 
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     table = @"CREATE TABLE [Listing]
@@ -40,9 +40,11 @@ namespace TestApp.Control
                             , [aID] INTEGER NOT NULL        
                             , [cost] REAL NOT NULL
                             , [address] TEXT NOT NULL UNIQUE
-                            , [image] BLOB
+                            , [image] BLOB NOT NULL
+                            , [rooms] INTEGER NOT NULL
+                            , [bathrooms] INTEGER NOT NULL
                             , FOREIGN KEY([aID]) REFERENCES [ACCOUNT]([accountID])
-                            );";
+                            );"; //Listing table created
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     table = @"CREATE TABLE [Logout]
@@ -51,7 +53,7 @@ namespace TestApp.Control
                             , [time] TEXT NOT NULL
                             , [date] TEXT NOT NULL
                             , FOREIGN KEY([aID]) REFERENCES [ACCOUNT]([accountID])
-                            );";
+                            );"; //Logout NOT NEEDED I THINK
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     table = @"CREATE TABLE [PURCHASE]
@@ -60,14 +62,16 @@ namespace TestApp.Control
                            , [accountID] INTEGER NOT NULL
                            , FOREIGN KEY([accountID]) REFERENCES [ACCOUNT]([accountID])
                            , FOREIGN KEY([listingID]) REFERENCES [LISTING]([listingID])
-                           );";
+                           );"; // Purchase table created
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     strSql = @"BEGIN TRANSACTION; 
                     INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (1, 'buyer1', 'pass1', 'buyer');
+                    INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (2, 'seller2', 'pass2', 'seller');
                     COMMIT;";
-                    cmnd.CommandText = strSql; // added by pat
-                    cmnd.ExecuteNonQuery(); // added by eve
+                    cmnd.CommandText = strSql; 
+                    cmnd.ExecuteNonQuery(); // data input creation
+
                     //cmnd.CommandText = strSql;
                     //string usrname1 = "cus";
 

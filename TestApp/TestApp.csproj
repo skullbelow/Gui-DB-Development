@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="Control\DBConnector.cs" />
     <Compile Include="Entity\Account.cs" />
+    <Compile Include="Entity\Listing.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>

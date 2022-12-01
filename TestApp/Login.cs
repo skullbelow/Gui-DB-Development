@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Text.RegularExpressions; // added for input validation (stopping SQL injections)
+
 namespace TestApp
 {
     public partial class Login : Form
@@ -43,11 +45,22 @@ namespace TestApp
 
         private void button1_Click(object sender, EventArgs e)
         {
+
             try
             {
                 SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
                 con.Open();
                 //command object
+
+                // Regex to validate user input as alphanumeric only (PREVENTING SQL INJECTIONS)
+                 Regex r = new Regex("^[a-zA-Z0-9]+$");
+                 if (!r.IsMatch(textBox1.Text) || !r.IsMatch(textBox2.Text))
+                 {
+                     MessageBox.Show("Credentials can only be alphanumeric. Try again.");
+                     return;// terminate early
+                 }
+                
+
                 string query = ("SELECT * FROM ACCOUNT WHERE name='"+ textBox1.Text + "' AND password='" + textBox2.Text + "'");
                 //string query = "SELECT * from Account";
                 SQLiteCommand cmd = new SQLiteCommand(query, con);
@@ -95,11 +108,18 @@ namespace TestApp
                     }
                 }*/
 
-                if (newRow[1].ToString() == textBox1.Text) //if 
+                if (newRow[1].ToString() == textBox1.Text && newRow[2].ToString() == textBox2.Text) //if user and password match then...
                 {
-                    MessageBox.Show("SUCCESS!");
-                    this.Hide();
-                    new BuyMenu().Show();
+                    if (newRow[3].ToString() == "buyer") //...take them to buyer menu
+                    {
+                        this.Hide();
+                        new BuyMenu().Show();
+                    }
+                    if (newRow[3].ToString() == "seller") //...take them to seller menu
+                    {
+                        this.Hide();
+                        new SellMenu((int)newRow[0]).Show();//THROWS LOGIN ERROR
+                    }
                 }
                 else
                 {
