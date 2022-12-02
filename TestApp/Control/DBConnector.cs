@@ -60,9 +60,13 @@ namespace TestApp.Control
                            ([purchaseID] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE
                            , [listingID] INTEGER NOT NULL
                            , [accountID] INTEGER NOT NULL
+                           , [cardNum] INTEGER NOT NULL
+                           , [expiration] INTEGER NOT NULL
+                           , [ccv] INTEGER NOT NULL
+                           , [cardHolder] TEXT NOT NULL
                            , FOREIGN KEY([accountID]) REFERENCES [ACCOUNT]([accountID])
                            , FOREIGN KEY([listingID]) REFERENCES [LISTING]([listingID])
-                           );"; // Purchase table created
+                           );"; // Purchase table created, added card information to the table
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     strSql = @"BEGIN TRANSACTION; 
