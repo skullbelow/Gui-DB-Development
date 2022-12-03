@@ -39,7 +39,6 @@ namespace TestApp
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
-            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -72,7 +71,7 @@ namespace TestApp
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(40, 125);
+            this.pictureBox1.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(106, 95);
             this.pictureBox1.TabIndex = 3;
@@ -81,7 +80,7 @@ namespace TestApp
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(245, 125);
+            this.pictureBox2.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(106, 95);
             this.pictureBox2.TabIndex = 4;
@@ -90,7 +89,7 @@ namespace TestApp
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Location = new System.Drawing.Point(454, 125);
+            this.pictureBox3.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(106, 95);
             this.pictureBox3.TabIndex = 5;
@@ -98,7 +97,7 @@ namespace TestApp
             // 
             // pictureBox4
             // 
-            this.pictureBox4.Location = new System.Drawing.Point(654, 125);
+            this.pictureBox4.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(106, 95);
             this.pictureBox4.TabIndex = 6;
@@ -106,7 +105,7 @@ namespace TestApp
             // 
             // pictureBox5
             // 
-            this.pictureBox5.Location = new System.Drawing.Point(40, 316);
+            this.pictureBox5.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(106, 95);
             this.pictureBox5.TabIndex = 7;
@@ -114,7 +113,7 @@ namespace TestApp
             // 
             // pictureBox6
             // 
-            this.pictureBox6.Location = new System.Drawing.Point(245, 316);
+            this.pictureBox6.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(106, 95);
             this.pictureBox6.TabIndex = 8;
@@ -122,7 +121,7 @@ namespace TestApp
             // 
             // pictureBox7
             // 
-            this.pictureBox7.Location = new System.Drawing.Point(454, 316);
+            this.pictureBox7.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(106, 95);
             this.pictureBox7.TabIndex = 9;
@@ -130,25 +129,18 @@ namespace TestApp
             // 
             // pictureBox8
             // 
-            this.pictureBox8.Location = new System.Drawing.Point(654, 316);
+            this.pictureBox8.Location = new System.Drawing.Point(1164, 33);
             this.pictureBox8.Name = "pictureBox8";
             this.pictureBox8.Size = new System.Drawing.Size(106, 95);
             this.pictureBox8.TabIndex = 10;
             this.pictureBox8.TabStop = false;
             // 
-            // vScrollBar1
-            // 
-            this.vScrollBar1.Location = new System.Drawing.Point(774, 48);
-            this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 80);
-            this.vScrollBar1.TabIndex = 14;
-            // 
             // SellMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.vScrollBar1);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(1432, 801);
             this.Controls.Add(this.pictureBox8);
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.pictureBox6);
@@ -185,6 +177,5 @@ namespace TestApp
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.PictureBox pictureBox8;
-        private System.Windows.Forms.VScrollBar vScrollBar1;
     }
 }
