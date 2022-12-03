@@ -61,7 +61,7 @@ namespace TestApp
                  }
                 
 
-                string query = ("SELECT * FROM ACCOUNT WHERE name='"+ textBox1.Text + "' AND password='" + textBox2.Text + "'");
+                string query = ("SELECT * FROM ACCOUNT WHERE name='" + textBox1.Text.GetHashCode().ToString() + "' AND password='" + textBox2.Text.GetHashCode().ToString() + "'");
                 //string query = "SELECT * from Account";
                 SQLiteCommand cmd = new SQLiteCommand(query, con);
                 //adapter
@@ -108,7 +108,7 @@ namespace TestApp
                     }
                 }*/
 
-                if (newRow[1].ToString() == textBox1.Text && newRow[2].ToString() == textBox2.Text) //if user and password match then...
+                if (newRow[1].ToString() == textBox1.Text.GetHashCode().ToString() && newRow[2].ToString() == textBox2.Text.GetHashCode().ToString()) //if user and password match then...
                 {
                     if (newRow[3].ToString() == "buyer") //...take them to buyer menu
                     {
@@ -140,7 +140,7 @@ namespace TestApp
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-
+            textBox2.PasswordChar = '*';
         }
     }
 }

@@ -47,15 +47,6 @@ namespace TestApp.Control
                             );"; //Listing table created
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
-                    table = @"CREATE TABLE [Logout]
-                            ([logID] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE
-                            , [aID] INTEGER NOT NULL
-                            , [time] TEXT NOT NULL
-                            , [date] TEXT NOT NULL
-                            , FOREIGN KEY([aID]) REFERENCES [ACCOUNT]([accountID])
-                            );"; //Logout NOT NEEDED I THINK
-                    cmnd.CommandText = table;
-                    cmnd.ExecuteNonQuery();
                     table = @"CREATE TABLE [PURCHASE]
                            ([purchaseID] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE
                            , [listingID] INTEGER NOT NULL
@@ -66,24 +57,19 @@ namespace TestApp.Control
                            , [cardHolder] TEXT NOT NULL
                            , FOREIGN KEY([accountID]) REFERENCES [ACCOUNT]([accountID])
                            , FOREIGN KEY([listingID]) REFERENCES [LISTING]([listingID])
-                           );"; // Purchase table created, added card information to the table
+                           );"; // Purchase table created, added card information to the table FIX CCV TO CVV
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     strSql = @"BEGIN TRANSACTION; 
-                    INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (1, 'buyer1', 'pass1', 'buyer');
-                    INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (2, 'seller2', 'pass2', 'seller');
+                    INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (1, $hashusr1, $hashpwd1, 'buyer');
+                    INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (2, $hashusr2, $hashpwd2, 'seller');
                     COMMIT;";
-                    cmnd.CommandText = strSql; 
-                    cmnd.ExecuteNonQuery(); // data input creation
 
-                    //cmnd.CommandText = strSql;
-                    //string usrname1 = "cus";
-
-                    /*cmnd.CommandText = strSql;
-                    string buyer = "BuyThisProperty";
-                    string pwd1 = "HousingMarketIsExpesinve";
-                    string seller = "emp";
-                    string pwd2 = "2wsx";
+                    cmnd.CommandText = strSql;
+                    string buyer = "buyer1";
+                    string pwd1 = "pass1";
+                    string seller = "seller2";
+                    string pwd2 = "pass2";
                     int x = buyer.GetHashCode();
                     int y = pwd1.GetHashCode();
                     int x1 = seller.GetHashCode();
@@ -91,8 +77,8 @@ namespace TestApp.Control
                     cmnd.Parameters.AddWithValue("$hashusr1", x);
                     cmnd.Parameters.AddWithValue("$hashpwd1", y);
                     cmnd.Parameters.AddWithValue("$hashusr2", x1);
-                    cmnd.Parameters.AddWithValue("$hashpwd2", y1); */
-                    //cmnd.ExecuteNonQuery();
+                    cmnd.Parameters.AddWithValue("$hashpwd2", y1);
+                    cmnd.ExecuteNonQuery();
                     conn.Close();
                 }
             }

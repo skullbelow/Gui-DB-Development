@@ -16,6 +16,12 @@ namespace TestApp
     public partial class SellMenu : Form
     {
         private int account;
+        struct TBs
+        {
+            public TextBox cost;
+            public TextBox address;
+        }
+
         public SellMenu(int aID)
         {
             this.account = aID;
@@ -40,33 +46,31 @@ namespace TestApp
 
             List<PictureBox> pictureBoxes = new List<PictureBox>(); // Where our created picture boxes go
 
-            /*List<PictureBox> pictureBoxesGUI = new List<PictureBox>(); // A list of the preplaced picture boxes
-            // Adding all preplaced picture boxes
-            pictureBoxesGUI.Add(pictureBox1); 
-            pictureBoxesGUI.Add(pictureBox2);
-            pictureBoxesGUI.Add(pictureBox3);
-            pictureBoxesGUI.Add(pictureBox4);
-            pictureBoxesGUI.Add(pictureBox5);
-            pictureBoxesGUI.Add(pictureBox6);
-            pictureBoxesGUI.Add(pictureBox7);
-            pictureBoxesGUI.Add(pictureBox8);*/
+
+            List<TBs> textBoxes = new List<TBs>(); // Where text boxes for each picture go
 
 
             foreach (DataRow row in dt.Rows)
              {
-                 pictureBoxes.Add(new PictureBox()); // create new picture box per each row retrieved from query
+                pictureBoxes.Add(new PictureBox()); // create new PictureBox per each row retrieved from query
+                textBoxes.Add(new TBs()); 
              }
 
-            // Honestly, to under stand below better, read this:
+            // Honestly, to understand picture handling better, read this:
             // https://stackoverflow.com/questions/10853301/save-and-load-image-sqlite-c-sharp
 
-            IDataReader rdr;
+             IDataReader rdr;
              SQLiteCommand imgCmd;
              string imgQuery;
 
-             for(int i = 1; i < pictureBoxes.Count+1; i++) // for each picture/picturebox
-             {
-                 imgQuery  = "SELECT image FROM Listing WHERE listingID = " + i.ToString() + " ;"; // grab picture from db
+            TextBox tb; // = new TextBox();
+            TBs tbs;
+
+            int i = 1;
+            //for (int i = 1; i < pictureBoxes.Count+1; i++) // for each picture/picturebox
+            foreach (DataRow row in dt.Rows)
+            {
+                 imgQuery = "SELECT image FROM Listing WHERE listingID = " + i.ToString() + " ;"; // grab picture from db
                  imgCmd = new SQLiteCommand(imgQuery, con);
                  imgCmd.Connection = con;
                  rdr = imgCmd.ExecuteReader(); // reads byte data returned from query
@@ -79,60 +83,62 @@ namespace TestApp
 
                         // transform byte array to image object
                         // then assign images to picture boxes in order of most recent to oldest 
-                        pictureBoxes[(pictureBoxes.Count - 1) - (i-1)].Image = ByteToImage(a); 
-                     }
+                        //pictureBoxes[(pictureBoxes.Count - 1) - (i-1)].Image = ByteToImage(a); 
+                        pictureBoxes[i - 1].Image = ByteToImage(a);
+                    }
                  }
                  catch (Exception exc) { MessageBox.Show(exc.Message); }
-             }
 
 
-            // NOTE: Form must have AutoScroll == true so that contents become scrollable after pictures take up entire page
-            int count = 0;
-             foreach(PictureBox pb in pictureBoxes) 
+                //MessageBox.Show("num attributes: " + dr.ItemArray.Length.ToString());
+                for (int j = 0; j < row.ItemArray.Length; j++)
+                {
+                    switch (j)
+                    {
+                        case 2: // Cost 
+                            tb = new TextBox();
+                            tb.Multiline = true;
+                            tb.ReadOnly = true;
+                            tb.AutoSize = false;
+                            tb.BorderStyle = BorderStyle.None;
+                            tb.Text = $"Cost of house: {row.ItemArray[j]}$";
+                            tb.Size = new System.Drawing.Size(200, 15);
+                            tbs = textBoxes[i-1];
+                            tbs.cost = tb;
+                            textBoxes[i-1] = tbs;
+                            break;
+                        case 3:
+                            tb = new TextBox();
+                            tb.Multiline = true;
+                            tb.ReadOnly = true;
+                            tb.AutoSize = false;
+                            tb.BorderStyle = BorderStyle.None;
+                            tb.Text = $"Address of house: {row.ItemArray[j]}";
+                            tb.Size = new System.Drawing.Size(200, 15);
+                            tbs = textBoxes[i-1];
+                            tbs.address = tb;
+                            textBoxes[i-1] = tbs;
+                            break;
+                        default:
+                            // do nothing (for now...)
+                            break;
+                    }
+                }
+
+                i++;
+            }
+
+
+
+             // NOTE: Form must have AutoScroll == true so that contents become scrollable after pictures take up entire page, i.e. :
+             this.AutoScroll = true;
+
+             int count = 0;
+             foreach(DataRow row in dt.Rows) 
              {
-                // Method 1
-                // for each existing picture box in GUI, give them the images of the picture boxes filled in above
-
-                // WARNING: THIS WILL CRASH AS CURRENTLY DESIGNED IF NUMBER OF IMAGES IN LISTING TABLE EXCEEDS
-                // THE NUMBER OF PICTURE BOXES PRE-PLACED IN DESIGN GUI
-
-                /*pictureBoxesGUI[count].SizeMode = PictureBoxSizeMode.Zoom; // so they whole picture fits in box
-                pictureBoxesGUI[count].Image = pb.Image;*/
-
-                // Method 2
-
-                DisplayImage(pb,count);
-
+                DisplayImage(textBoxes[(pictureBoxes.Count - 1) - count] ,pictureBoxes[(pictureBoxes.Count-1) - count],count);
                 count++;
              }
-
-            
-
-
-            // Code for obtaining info from each row
-            /*foreach (DataRow row in dt.Rows)
-            {
-                foreach (DataColumn column in dt.Columns)
-                {
-                    MessageBox.Show(row[column].ToString());
-                }
-            }*/
-
-
-            ///////////     PSUEDO CODING OUT IDEAS
-
-            // run query above and save to "results"
-
-            // create Picturebox list "pList"
-
-            // for each row in "results"
-            //      pList.add(new PictureBox())
-
-            // for each PictureBox in pList
-            //      PictureBox.path = corresponding row information
-            //      PictureBox.click() = {displayStuff();}
-
-
 
 
         }
@@ -160,7 +166,7 @@ namespace TestApp
         }
 
         // helper method for displaying image
-        private void DisplayImage(PictureBox pb, int count, int perRow=3)
+        private void DisplayImage(TBs tbs, PictureBox pb, int count, int perRow=3)
         {
             pb.Width = 200;
             pb.Height = 200;
@@ -168,7 +174,15 @@ namespace TestApp
             int x = (count + perRow) % perRow;
             pb.Location = new Point(50 + x*300, 100 + 300*y);
             pb.SizeMode = PictureBoxSizeMode.Zoom; // so they whole picture fits in box
-            Controls.Add(pb);
+            Controls.Add(pb); // Actually displays the damn picturebox
+
+
+            tbs.cost.Location = new Point(50 + x * 300, 300 + 300 * y); // same as picturebox but a little down
+            tbs.address.Location = new Point(50 + x * 300, 330 + 300 * y); // just below cost text
+
+            Controls.Add(tbs.cost);
+            Controls.Add(tbs.address);
+
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
