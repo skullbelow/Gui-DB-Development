@@ -82,6 +82,7 @@
     <Compile Include="Control\DBConnector.cs" />
     <Compile Include="Entity\Account.cs" />
     <Compile Include="Entity\Listing.cs" />
+    <Compile Include="Entity\Property.cs" />
     <Compile Include="Entity\Purchase.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>

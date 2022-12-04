@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestApp.Entity
 {
-    class Purchase
+    public class Purchase
     {
         private int listing; // listing ID Number
         private int buyer;   // buyer account ID Number
