@@ -16,9 +16,12 @@ namespace TestApp
     public partial class BuyListing : Form
     {
         string listingID = "-1";
-        public BuyListing(TextBox cost, TextBox address, TextBox rooms, TextBox bathrooms, PictureBox pb, string lID)
+        int account;
+        public BuyListing(TextBox cost, TextBox address, TextBox rooms, TextBox bathrooms, PictureBox pb, string lID,int acc)
         {
             InitializeComponent();
+
+            account = acc;
 
             listingID = lID;
 
@@ -126,11 +129,18 @@ namespace TestApp
             con.Open();
             SQLiteCommand cmnd = new SQLiteCommand();
             cmnd.Connection = con;
-            cmnd.CommandText = @"BEGIN TRANSACTION; DELETE FROM Listing WHERE listingID=" + listingID + "; COMMIT;";
+            //MessageBox.Show(@"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;");
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;";
             cmnd.ExecuteNonQuery();
 
+
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = con;
+            cmd.CommandText = @"BEGIN TRANSACTION; DELETE FROM Listing WHERE listingID=" + listingID + "; COMMIT;";
+            cmd.ExecuteNonQuery();
+
             this.Hide();
-            new BuyMenu().Show();
+            new BuyMenu(account).Show();
 
         }
 

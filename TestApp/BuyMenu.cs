@@ -28,10 +28,14 @@ namespace TestApp
         List<PictureBox> pictureBoxes;
         List<string> listingIDs;
 
+        int account;
 
-        public BuyMenu()
+
+        public BuyMenu(int acc)
         {
             InitializeComponent();
+
+            account = acc;
 
 
             //Create SQLite connection and open it
@@ -209,7 +213,7 @@ namespace TestApp
             if (found)
             {
                 this.Hide();
-                new BuyListing(textBoxes[index].cost, textBoxes[index].address, textBoxes[index].rooms, textBoxes[index].bathrooms, pictureBoxes[index],listingIDs[index]).Show();
+                new BuyListing(textBoxes[index].cost, textBoxes[index].address, textBoxes[index].rooms, textBoxes[index].bathrooms, pictureBoxes[index],listingIDs[index],account).Show();
             }
             else
             {
@@ -223,6 +227,14 @@ namespace TestApp
 
         private void button2_Click(object sender, EventArgs e)//logout button should return the user to the home page
         {
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = con;
+            //MessageBox.Show(account.ToString());
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + account.ToString() + ", '" + DateTime.Now.ToString() + "', 'logout'); COMMIT;";
+            cmnd.ExecuteNonQuery();
+
             this.Hide();
             new Login().Show();
         }

@@ -151,6 +151,14 @@ namespace TestApp
 
         private void button2_Click(object sender, EventArgs e) // Logout button should return the user to the login form
         {
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = con;
+            //MessageBox.Show(account.ToString());
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + account.ToString() + ", '" + DateTime.Now.ToString() + "', 'logout'); COMMIT;";
+            cmnd.ExecuteNonQuery();
+
             this.Hide();
             new Login().Show();
         }

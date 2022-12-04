@@ -49,15 +49,24 @@ namespace TestApp.Control
                     cmnd.ExecuteNonQuery();
                     table = @"CREATE TABLE [PURCHASE]
                            ([purchaseID] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE
-                           , [listingID] INTEGER NOT NULL
+                           , [listingID] INTEGER NOT NULL 
                            , [accountID] INTEGER NOT NULL
                            , [cardNum] INTEGER NOT NULL
-                           , [expiration] INTEGER NOT NULL
-                           , [ccv] INTEGER NOT NULL
+                           , [expiration] TEXT NOT NULL
+                           , [cvv] INTEGER NOT NULL
                            , [cardHolder] TEXT NOT NULL
                            , FOREIGN KEY([accountID]) REFERENCES [ACCOUNT]([accountID])
-                           , FOREIGN KEY([listingID]) REFERENCES [LISTING]([listingID])
+                           , FOREIGN KEY([listingID]) REFERENCES [LISTING]([listingID]) ON DELETE NO ACTION
                            );"; // Purchase table created, added card information to the table FIX CCV TO CVV
+                    cmnd.CommandText = table;
+                    cmnd.ExecuteNonQuery();
+                    table = @"CREATE TABLE [ACCESS]
+                            ([accountID] INTEGER NOT NULL    
+                            , [time] TEXT NOT NULL
+                            , [type] TEXT NOT NULL
+                            , FOREIGN KEY([accountID]) REFERENCES [ACCOUNT]([accountID])
+                            , PRIMARY KEY (accountID, time)
+                            );"; // Access table created for logins and logouts
                     cmnd.CommandText = table;
                     cmnd.ExecuteNonQuery();
                     strSql = @"BEGIN TRANSACTION; 

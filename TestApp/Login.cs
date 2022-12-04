@@ -113,7 +113,17 @@ namespace TestApp
                     if (newRow[3].ToString() == "buyer") //...take them to buyer menu
                     {
                         this.Hide();
-                        new BuyMenu().Show();
+                        int account = Int32.Parse(newRow[0].ToString());
+
+                        SQLiteCommand cmnd = new SQLiteCommand();
+                        cmnd.Connection = con;
+                        //MessageBox.Show(DateTime.Now.ToString());
+                        cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + account.ToString() +", '" + DateTime.Now.ToString() + "', 'login'); COMMIT;";
+                        cmnd.ExecuteNonQuery();
+
+
+
+                        new BuyMenu(account).Show();
                     }
                     if (newRow[3].ToString() == "seller") //...take them to seller menu
                     {
