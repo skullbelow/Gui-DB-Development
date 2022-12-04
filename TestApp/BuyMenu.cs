@@ -14,11 +14,21 @@ namespace TestApp
 {
     public partial class BuyMenu : Form
     {
+
         struct TBs
         {
             public TextBox cost;
             public TextBox address;
+            public TextBox rooms;
+            public TextBox bathrooms;
         }
+
+        List<RadioButton> radioButtons;
+        List<TBs> textBoxes;
+        List<PictureBox> pictureBoxes;
+        List<string> listingIDs;
+
+
         public BuyMenu()
         {
             InitializeComponent();
@@ -40,16 +50,24 @@ namespace TestApp
             SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd); // Constructs a data adapter using the specified select command (i.e. cmd)
             adapter.Fill(dt); // fill out data table with query results
 
-            List<PictureBox> pictureBoxes = new List<PictureBox>(); // Where our created picture boxes go
+            pictureBoxes = new List<PictureBox>(); // Where our created picture boxes go
 
 
-            List<TBs> textBoxes = new List<TBs>(); // Where text boxes for each picture go
+            textBoxes = new List<TBs>(); // Where text boxes for each picture go
+
+            radioButtons = new List<RadioButton>(); // buttons connected to a specific listing option
+
+            listingIDs = new List<string>();
+
+
 
 
             foreach (DataRow row in dt.Rows)
             {
                 pictureBoxes.Add(new PictureBox()); // create new PictureBox per each row retrieved from query
                 textBoxes.Add(new TBs());
+                radioButtons.Add(new RadioButton());
+                listingIDs.Add(row.ItemArray[0].ToString());
             }
 
             // Honestly, to understand picture handling better, read this:
@@ -63,10 +81,10 @@ namespace TestApp
             TBs tbs;
 
             int i = 1;
-            //for (int i = 1; i < pictureBoxes.Count+1; i++) // for each picture/picturebox
-            foreach (DataRow row in dt.Rows)
+            foreach (DataRow row in dt.Rows) // FOR EACH ROW IN THE TABLE (RESULT FROM QUERY)
             {
-                imgQuery = "SELECT image FROM Listing WHERE listingID = " + i.ToString() + " ;"; // grab picture from db
+                //IMAGE HANDLING
+                imgQuery = "SELECT image FROM Listing WHERE listingID = " + row.ItemArray[0].ToString() + " ;"; // grab picture from db
                 imgCmd = new SQLiteCommand(imgQuery, con);
                 imgCmd.Connection = con;
                 rdr = imgCmd.ExecuteReader(); // reads byte data returned from query
@@ -86,7 +104,10 @@ namespace TestApp
                 catch (Exception exc) { MessageBox.Show(exc.Message); }
 
 
-                //MessageBox.Show("num attributes: " + dr.ItemArray.Length.ToString());
+
+
+
+                //TEXTBOX HANDLING
                 for (int j = 0; j < row.ItemArray.Length; j++)
                 {
                     switch (j)
@@ -103,7 +124,7 @@ namespace TestApp
                             tbs.cost = tb;
                             textBoxes[i - 1] = tbs;
                             break;
-                        case 3:
+                        case 3: // Address
                             tb = new TextBox();
                             tb.Multiline = true;
                             tb.ReadOnly = true;
@@ -115,11 +136,41 @@ namespace TestApp
                             tbs.address = tb;
                             textBoxes[i - 1] = tbs;
                             break;
+                        case 5: // Rooms
+                            tb = new TextBox();
+                            tb.Multiline = true;
+                            tb.ReadOnly = true;
+                            tb.AutoSize = false;
+                            tb.BorderStyle = BorderStyle.None;
+                            tb.Text = $"# of Rooms: {row.ItemArray[j]}";
+                            tb.Size = new System.Drawing.Size(200, 15);
+                            tbs = textBoxes[i - 1];
+                            tbs.rooms = tb;
+                            textBoxes[i - 1] = tbs;
+                            break;
+                        case 6: // Bathrooms
+                            tb = new TextBox();
+                            tb.Multiline = true;
+                            tb.ReadOnly = true;
+                            tb.AutoSize = false;
+                            tb.BorderStyle = BorderStyle.None;
+                            tb.Text = $"# of Bathrooms: {row.ItemArray[j]}";
+                            tb.Size = new System.Drawing.Size(200, 15);
+                            tbs = textBoxes[i - 1];
+                            tbs.bathrooms = tb;
+                            textBoxes[i - 1] = tbs;
+                            break;
                         default:
                             // do nothing (for now...)
                             break;
                     }
                 }
+
+
+
+                //RADIO BUTTON HANDLING
+                radioButtons[i-1].Text = "Pick Me";
+
 
                 i++;
             }
@@ -132,7 +183,7 @@ namespace TestApp
             int count = 0;
             foreach (DataRow row in dt.Rows)
             {
-                DisplayImage(textBoxes[(pictureBoxes.Count - 1) - count], pictureBoxes[(pictureBoxes.Count - 1) - count], count);
+                DisplayImage(radioButtons[(pictureBoxes.Count - 1) - count], textBoxes[(pictureBoxes.Count - 1) - count], pictureBoxes[(pictureBoxes.Count - 1) - count], count);
                 count++;
             }
 
@@ -142,8 +193,32 @@ namespace TestApp
 
         private void button1_Click(object sender, EventArgs e)// buy button should take a buyer to the buy form of a selected listing
         {
-            this.Hide();
-            new BuyListing().Show();
+            
+
+            bool found = false;
+            int index = 0;
+            for(int i = 0; i < radioButtons.Count; i++)
+            {
+                if(radioButtons[i].Checked)
+                {
+                    found = true;
+                    index = i;
+                }
+            }
+
+            if (found)
+            {
+                this.Hide();
+                new BuyListing(textBoxes[index].cost, textBoxes[index].address, textBoxes[index].rooms, textBoxes[index].bathrooms, pictureBoxes[index],listingIDs[index]).Show();
+            }
+            else
+            {
+                MessageBox.Show("You must select a house.");
+                return;
+            }
+            
+            
+
         }
 
         private void button2_Click(object sender, EventArgs e)//logout button should return the user to the home page
@@ -167,7 +242,7 @@ namespace TestApp
             return image;
         }
 
-        private void DisplayImage(TBs tbs, PictureBox pb, int count, int perRow = 3)
+        private void DisplayImage(RadioButton rb, TBs tbs, PictureBox pb, int count, int perRow = 3)
         {
             pb.Width = 200;
             pb.Height = 200;
@@ -178,18 +253,21 @@ namespace TestApp
             Controls.Add(pb); // Actually displays the damn picturebox
 
 
-            tbs.cost.Location = new Point(50 + x * 300, 300 + 300 * y); // same as picturebox but a little down
-            tbs.address.Location = new Point(50 + x * 300, 330 + 300 * y); // just below cost text
+            tbs.address.Location = new Point(50 + x * 300, 300 + 300 * y); // same as picturebox but a little down
+            tbs.cost.Location = new Point(50 + x * 300, 315 + 300 * y); // just below cost text
+            tbs.rooms.Location = new Point(50 + x * 300, 330 + 300 * y); // same as picturebox but a little down
+            tbs.bathrooms.Location = new Point(50 + x * 300, 345 + 300 * y); // just below cost text
 
             Controls.Add(tbs.cost);
             Controls.Add(tbs.address);
+            Controls.Add(tbs.rooms);
+            Controls.Add(tbs.bathrooms);
+
+
+            rb.Location = new Point(50 + x * 300, 360 + 300 * y);
+            Controls.Add(rb);
 
         }
-
-
-
-
-
 
     }
 }

@@ -70,7 +70,7 @@ namespace TestApp
             //for (int i = 1; i < pictureBoxes.Count+1; i++) // for each picture/picturebox
             foreach (DataRow row in dt.Rows)
             {
-                 imgQuery = "SELECT image FROM Listing WHERE listingID = " + i.ToString() + " ;"; // grab picture from db
+                 imgQuery = "SELECT image FROM Listing WHERE listingID = " + row.ItemArray[0].ToString() + " ;"; // grab picture from db
                  imgCmd = new SQLiteCommand(imgQuery, con);
                  imgCmd.Connection = con;
                  rdr = imgCmd.ExecuteReader(); // reads byte data returned from query
@@ -177,8 +177,8 @@ namespace TestApp
             Controls.Add(pb); // Actually displays the damn picturebox
 
 
-            tbs.cost.Location = new Point(50 + x * 300, 300 + 300 * y); // same as picturebox but a little down
-            tbs.address.Location = new Point(50 + x * 300, 330 + 300 * y); // just below cost text
+            tbs.address.Location = new Point(50 + x * 300, 300 + 300 * y); // same as picturebox but a little down
+            tbs.cost.Location = new Point(50 + x * 300, 330 + 300 * y); // just below cost text
 
             Controls.Add(tbs.cost);
             Controls.Add(tbs.address);
@@ -194,5 +194,7 @@ namespace TestApp
         {
 
         }
+
+
     }
 }

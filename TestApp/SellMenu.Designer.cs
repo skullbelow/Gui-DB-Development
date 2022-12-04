@@ -45,7 +45,7 @@ namespace TestApp
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(1102, 12);
+            this.button2.Location = new System.Drawing.Point(927, 12);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -58,7 +58,7 @@ namespace TestApp
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1203, 692);
+            this.ClientSize = new System.Drawing.Size(1033, 692);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Name = "SellMenu";

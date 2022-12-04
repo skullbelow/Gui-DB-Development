@@ -100,12 +100,6 @@ namespace TestApp
                 MessageBox.Show("Cost can only be numeric. Try again.");
                 return;// terminate early
             }
-            r = new Regex("^[a-zA-Z0-9,.' ]+"); //Description needs to accept commas, spaces, apostrophes, periods. 
-            if (!r.IsMatch(textBox1.Text))
-            {
-                MessageBox.Show("Descriptions can only be alphanumeric. Try again.");
-                return;// terminate early
-            }
             if (!(Decimal.ToInt32(numericUpDown1.Value) < 11) && !(Decimal.ToInt32(numericUpDown2.Value) < 11))
             {
                 MessageBox.Show("There can be no more than 10 rooms or 10 bathrooms. Try again.");
@@ -173,12 +167,6 @@ namespace TestApp
                 return imageBytes;
             }
         }
-
-
-
-
-
-
 
     }
 }

@@ -72,6 +72,7 @@
     <Compile Include="BuyListing.Designer.cs">
       <DependentUpon>BuyListing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Control\LoginControl.cs" />
     <Compile Include="CreateListing.cs">
       <SubType>Form</SubType>
     </Compile>
