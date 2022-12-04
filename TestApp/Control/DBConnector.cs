@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SQLite;
 using TestApp.Entity;
+using System.Data;
 
 namespace TestApp.Control
 {
     public static class DBConnector
     {
+
         public static void InitializeDB()
         {
             SQLiteConnection.CreateFile("nAccountDb.db");
@@ -92,36 +94,69 @@ namespace TestApp.Control
                 }
             }
         }
+
+
+
         public static Account GetUser(string usr, string pwd)
         {
             using (SQLiteConnection conn = new SQLiteConnection(@"data source = nAccountDb.db"))
             {
                 conn.Open();
-                int x = usr.GetHashCode();
-                int y = pwd.GetHashCode();
-                string stm = @"SELECT[Id]
-                        ,[username]
-                        ,[password]
-                        ,[type]
-                        FROM[ACCOUNT]
-                        WHERE[username] == ($name)
-                        AND[password] == ($pd);";
+
+                string stm = @"SELECT * FROM ACCOUNT WHERE name='" + usr.GetHashCode().ToString() + "' AND password='" + pwd.GetHashCode().ToString() + "'";
                 using (SQLiteCommand cmnd = new SQLiteCommand(stm, conn))
                 {
-                    cmnd.Parameters.AddWithValue("$name", x);
-                    cmnd.Parameters.AddWithValue("$pd", y);
-                    using (SQLiteDataReader rdr = cmnd.ExecuteReader())
+                    DataTable dt = new DataTable();
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmnd);
+                    adapter.Fill(dt);
+                    DataRow newRow; // result row based on query pull
+
+                    try
                     {
-                        while (rdr.Read())
-                        {
-                            Account acct = new Account(rdr.GetInt32(0), usr, rdr.GetString(3));
-                            return acct;
-                        }
-                        Account act = new Account(0, null, null);
-                        return act;
+                        newRow = dt.Rows[0]; // setting the inital row (should be only one result row because of the query syntax)
+                        Account acc = new Account(Int32.Parse(newRow[0].ToString()), newRow[1].ToString(), newRow[3].ToString() );
+                        return acc;
                     }
+                    catch //user enters wrong credentials
+                    {
+                        Account acc = new Account(-500, "", ""); // dummy Account that gets flagged from accountID of -500
+                        return acc;
+                    }
+
+                    
+
                 }
             }
         }
+
+
+
+        public static void AddLoginToDB(Account acc)
+        {
+            SQLiteConnection conn = new SQLiteConnection(@"data source = nAccountDb.db");
+            conn.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = conn;
+            //MessageBox.Show(DateTime.Now.ToString());
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + acc.getAccountID().ToString() + ", '" + DateTime.Now.ToString() + "', 'login'); COMMIT;";
+            cmnd.ExecuteNonQuery();
+            conn.Close();
+        }
+
+
+
+        public static void AddLogoutToDB(Account acc)
+        {
+            SQLiteConnection conn = new SQLiteConnection(@"data source = nAccountDb.db");
+            conn.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = conn;
+            //MessageBox.Show(DateTime.Now.ToString());
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + acc.getAccountID().ToString() + ", '" + DateTime.Now.ToString() + "', 'logout'); COMMIT;";
+            cmnd.ExecuteNonQuery();
+            conn.Close();
+        }
+
+
     }
 }

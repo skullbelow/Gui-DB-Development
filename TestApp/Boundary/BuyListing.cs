@@ -104,12 +104,12 @@ namespace TestApp
             r = new Regex("^[0-9]+"); //CCV is only three integers and only numeric 
             if (!r.IsMatch(textBox3.Text))
             {
-                MessageBox.Show("The CCV is only numbers. Try again.");
+                MessageBox.Show("The CVV is only numbers. Try again.");
                 return;// terminate early
             }
             if (textBox3.Text.Length != 3)
             {
-                MessageBox.Show("The CCV should only be a length of three numbers.");
+                MessageBox.Show("The CVV should only be a length of three numbers.");
                 return;
             }
             r = new Regex("^[a-zA-Z]+"); //Cardholder names need only accept the alphabet. 

@@ -8,8 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using System.Text.RegularExpressions; // added for input validation (stopping SQL injections)
+using TestApp.Control;
+using TestApp.Entity;
 
 namespace TestApp
 {
@@ -19,132 +20,48 @@ namespace TestApp
         {
             InitializeComponent();
         }
-        /*        private void Login_Load(object sender, EventArgs e)
-                {
-                    SQLiteConnection conn = new SQLiteConnection(@"data source = nAccountDb.db");
-                    try
-                    {
-                        conn.Open();
-                    }
-                    catch
-                    {
-                        Console.WriteLine("DB conn open erorr");
-                    }
 
-                    SQLiteDataReader dataReader;
-                    SQLiteCommand command = conn.CreateCommand();
-                    command.CommandText = "SELECT * FROM Account";
-
-                    dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        Console.WriteLine(dataReader.GetInt32(0));
-                    }
-                }
-        */
 
         private void button1_Click(object sender, EventArgs e)
         {
 
-            try
+            if (!LoginControl.IsValid(textBox1.Text, textBox2.Text))
             {
-                SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
-                con.Open();
-                //command object
-
-                // Regex to validate user input as alphanumeric only (PREVENTING SQL INJECTIONS)
-                 Regex r = new Regex("^[a-zA-Z0-9]+$");
-                 if (!r.IsMatch(textBox1.Text) || !r.IsMatch(textBox2.Text))
-                 {
-                     MessageBox.Show("Credentials can only be alphanumeric. Try again.");
-                     return;// terminate early
-                 }
-                
-
-                string query = ("SELECT * FROM ACCOUNT WHERE name='" + textBox1.Text.GetHashCode().ToString() + "' AND password='" + textBox2.Text.GetHashCode().ToString() + "'");
-                //string query = "SELECT * from Account";
-                SQLiteCommand cmd = new SQLiteCommand(query, con);
-                //adapter
-                //datatable
-                DataTable dt = new DataTable();
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-                adapter.Fill(dt);
-                DataRow newRow; // result row based on query pull
-
-                try 
-                {
-                    newRow = dt.Rows[0]; // setting the inital row (should be only one result row because of the query syntax)
-                }
-                catch 
-                {
-                    MessageBox.Show("Incorrect credentials, try again");
-
-                    return; // terminating early
-                }
-
-                //MessageBox.Show(newRow[2].ToString()); // FOR REFERENCE
-
-                //MessageBox.Show(dt.ToString());
-                //MessageBox.Show(adapter.ToString());
-
-                /*foreach (DataRow row in dt.Tables[0].Rows)
-                {
-                    ListViewItem lvi = new ListViewItem();
-                    lvi.Text = row["accountID"].ToString();
-                    lvi.SubItems.Add(row["name"].ToString());
-                    lvi.SubItems.Add(row["password"].ToString());
-                    lvi.SubItems.Add(row["type"].ToString());
-                    //listView1.Items.Add(lvi);
-
-                }*/
-
-
-                // FOR REFERENCE
-                /*foreach (DataRow row in dt.Rows)
-                {
-                    foreach (DataColumn column in dt.Columns)
-                    {
-                        MessageBox.Show(row[column].ToString());
-                    }
-                }*/
-
-                if (newRow[1].ToString() == textBox1.Text.GetHashCode().ToString() && newRow[2].ToString() == textBox2.Text.GetHashCode().ToString()) //if user and password match then...
-                {
-                    if (newRow[3].ToString() == "buyer") //...take them to buyer menu
-                    {
-                        this.Hide();
-                        int account = Int32.Parse(newRow[0].ToString());
-
-                        SQLiteCommand cmnd = new SQLiteCommand();
-                        cmnd.Connection = con;
-                        //MessageBox.Show(DateTime.Now.ToString());
-                        cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + account.ToString() +", '" + DateTime.Now.ToString() + "', 'login'); COMMIT;";
-                        cmnd.ExecuteNonQuery();
-
-
-
-                        new BuyMenu(account).Show();
-                    }
-                    if (newRow[3].ToString() == "seller") //...take them to seller menu
-                    {
-                        this.Hide();
-                        int account = Int32.Parse(newRow[0].ToString());
-                        new SellMenu(account).Show();//no longer throws login error
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Invalid username or password");
-                }
+                MessageBox.Show("Credentials can only be alphanumeric. Try again.");
+                return;// terminate early
             }
-            catch (Exception ex)
+
+
+
+
+            Account acc = LoginControl.ObtainUser(textBox1.Text, textBox2.Text);
+
+            if (acc.getAccountID() == -500) // -500 is the flag value that indicates the user entered in wrong 
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Incorrect Credentials. Try again");
+                return;// terminate early
             }
-        }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
+
+
+            if (acc.getAccountType().Equals("buyer")) // Take them to buyer menu
+            {
+                LoginControl.AddLoginToDB(acc);
+                this.Hide();
+                new BuyMenu(acc.getAccountID()).Show();
+            }
+            else if (acc.getAccountType().Equals("seller")) // Take them to seller menu
+            {
+                LoginControl.AddLoginToDB(acc);
+                this.Hide();
+                new SellMenu(acc.getAccountID()).Show();//no longer throws login error
+            }
+            else // This should theoretically never trigger, but for completeness..
+            {
+                MessageBox.Show("Something went wrong. Click 'Exit' button and try again.");
+            }
+
+
 
         }
 
@@ -158,5 +75,8 @@ namespace TestApp
             Application.Exit();
         }
 
+
     }
+
+    
 }

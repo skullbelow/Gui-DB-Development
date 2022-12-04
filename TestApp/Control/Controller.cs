@@ -9,6 +9,11 @@ namespace TestApp
 {
     static class Controller
     {
+
+        /*Startup: This encompasses the initial set of tasks that the system needs to perform once it
+        is started. For instance, loading up and displaying an initial set of data, or performing initial
+        application configurations */
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
