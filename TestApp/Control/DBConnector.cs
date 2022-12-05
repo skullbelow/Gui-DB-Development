@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using TestApp.Entity;
 using System.Data;
+using System.IO;
 
 namespace TestApp.Control
 {
@@ -74,7 +75,18 @@ namespace TestApp.Control
                     strSql = @"BEGIN TRANSACTION; 
                     INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (1, $hashusr1, $hashpwd1, 'buyer');
                     INSERT INTO ACCOUNT (accountID, name, password, type) VALUES (2, $hashusr2, $hashpwd2, 'seller');
+                    INSERT INTO LISTING (listingID, aID, cost, address, image, rooms, bathrooms) VALUES (1, 2, 350000, '123 tester road', (@IM1), 5, 2);
+                    INSERT INTO LISTING (listingID, aID, cost, address, image, rooms, bathrooms) VALUES (2, 2, 360000, '132 tester road', (@IM2), 10, 4);
+                    INSERT INTO LISTING (listingID, aID, cost, address, image, rooms, bathrooms) VALUES (3, 2, 370000, '321 tester road', (@IM3), 15, 6);
                     COMMIT;";
+
+                    byte[] imageData1 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\259.jpg");
+                    byte[] imageData2 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\635.jpg");
+                    byte[] imageData3 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\IMG_9333.jpg");
+                    cmnd.Parameters.AddWithValue("@IM1", imageData1);
+                    cmnd.Parameters.AddWithValue("@IM2", imageData2);
+                    cmnd.Parameters.AddWithValue("@IM3", imageData3);
+
 
                     cmnd.CommandText = strSql;
                     string buyer = "buyer1";

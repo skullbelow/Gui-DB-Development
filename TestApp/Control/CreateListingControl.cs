@@ -16,7 +16,7 @@ namespace TestApp.Control
         public static string IsValid(string address, string cost, int rooms, int bathrooms)
         {
             // user input validation block
-            Regex r = new Regex("[a-zA-Z0-9,. ]+"); //address needs to accept commas, spaces, and periods as well
+            Regex r = new Regex("^[a-zA-Z0-9,. ]+$"); //address needs to accept commas, spaces, and periods as well
             if (!r.IsMatch(address))
             {
                 return "Address can only be alphanumeric. Try again.";
