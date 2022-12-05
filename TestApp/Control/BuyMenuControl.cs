@@ -138,7 +138,8 @@ namespace TestApp.Control
             int count = 0;
             foreach (DataRow row in dt.Rows)
             {
-                listings.Add(new Listing(Int32.Parse(row.ItemArray[0].ToString()), Int32.Parse(row.ItemArray[1].ToString()), row.ItemArray[3].ToString(), Int32.Parse(row.ItemArray[2].ToString()), pictureBoxes[(pictureBoxes.Count - 1) - count], textBoxes[(pictureBoxes.Count - 1) - count].address, textBoxes[(pictureBoxes.Count - 1) - count].cost, radioButtons[(pictureBoxes.Count - 1) - count], textBoxes[(pictureBoxes.Count - 1) - count].rooms, textBoxes[(pictureBoxes.Count - 1) - count].bathrooms));
+                //listings.Add(new Listing(Int32.Parse(row.ItemArray[0].ToString()), Int32.Parse(row.ItemArray[1].ToString()), row.ItemArray[3].ToString(), Int32.Parse(row.ItemArray[2].ToString()), pictureBoxes[(pictureBoxes.Count - 1) - count], textBoxes[(pictureBoxes.Count - 1) - count].address, textBoxes[(pictureBoxes.Count - 1) - count].cost, radioButtons[(pictureBoxes.Count - 1) - count], textBoxes[(pictureBoxes.Count - 1) - count].rooms, textBoxes[(pictureBoxes.Count - 1) - count].bathrooms));
+                listings.Add(new Listing(Int32.Parse(row.ItemArray[0].ToString()), Int32.Parse(row.ItemArray[1].ToString()), row.ItemArray[3].ToString(), Int32.Parse(row.ItemArray[2].ToString()), pictureBoxes[count], textBoxes[count].address, textBoxes[count].cost, radioButtons[count], textBoxes[count].rooms, textBoxes[count].bathrooms));
                 count++;
             }
 

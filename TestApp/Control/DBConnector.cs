@@ -228,6 +228,22 @@ namespace TestApp.Control
 
 
 
+        public static void InsertPurchaseRemoveListing(string listingID, Account account, string cardNumHash, string expHash, string cvvHash, string cardNameHash)
+        {
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = con;
+            //                 @"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;");
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.getAccountID().ToString() + @", " + cardNumHash + @",'" + expHash + "', " + cvvHash + ", '" + cardNameHash + @"'); COMMIT;";
+            cmnd.ExecuteNonQuery();
+
+
+            SQLiteCommand cmd = new SQLiteCommand();
+            cmd.Connection = con;
+            cmd.CommandText = @"BEGIN TRANSACTION; DELETE FROM Listing WHERE listingID=" + listingID + "; COMMIT;";
+            cmd.ExecuteNonQuery();
+        }
 
 
     }

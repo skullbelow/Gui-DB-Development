@@ -66,9 +66,9 @@ namespace TestApp
 
             try
             {
-                pictureBox1.ImageLocation.Equals(""); // this will throw exception if picture is not selected
+                pictureBox1.ImageLocation.Equals(""); // this will throw exception if picture is not selected...
             }
-            catch
+            catch //... but that is okay because we handle the exception accordingly here
             {
                 MessageBox.Show("You must upload a picture to create listing.");
                 return;// terminate early
@@ -87,7 +87,10 @@ namespace TestApp
             new SellMenu(account).Show();
         }
 
-
-
+        private void button3_Click(object sender, EventArgs e) //Back Button: returns to sell menu, cancels create listing form
+        {
+            this.Hide();
+            new SellMenu(account).Show();
+        }
     }
 }

@@ -33,11 +33,11 @@ namespace TestApp
 
             listings = BuyMenuControl.FormatListings();
 
-            int count = 0;
-            foreach (Listing listing in listings)
+
+            for(int i = 0; i < listings.Count; i++)
             {
-                DisplayImage(listing.radioButton, listing.adressTextBox, listing.costTextBox, listing.rooms , listing.bathRooms, listing.pictureBox, count);
-                count++;
+                // We display in reverse order so the most recent listings come first
+                DisplayImage(listings[(listings.Count-1)-i].radioButton, listings[(listings.Count - 1) - i].adressTextBox, listings[(listings.Count - 1) - i].costTextBox, listings[(listings.Count - 1) - i].rooms , listings[(listings.Count - 1) - i].bathRooms, listings[(listings.Count - 1) - i].pictureBox, i);
             }
 
 

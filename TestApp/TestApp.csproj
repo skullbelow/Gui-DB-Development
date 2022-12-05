@@ -73,6 +73,7 @@
       <DependentUpon>BuyListing.cs</DependentUpon>
     </Compile>
     <Compile Include="Control\BuyMenuControl.cs" />
+    <Compile Include="Control\BuyListingControl.cs" />
     <Compile Include="Control\CreateListingControl.cs" />
     <Compile Include="Control\SellMenuControl.cs" />
     <Compile Include="Control\LoginControl.cs" />
