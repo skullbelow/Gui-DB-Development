@@ -10,14 +10,15 @@ using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Text.RegularExpressions;
 using System.IO;
+using TestApp.Entity;
 
 namespace TestApp
 {
     public partial class BuyListing : Form
     {
         string listingID = "-1";
-        int account;
-        public BuyListing(TextBox cost, TextBox address, TextBox rooms, TextBox bathrooms, PictureBox pb, string lID,int acc)
+        Account account;
+        public BuyListing(TextBox cost, TextBox address, TextBox rooms, TextBox bathrooms, PictureBox pb, string lID, Account acc)
         {
             InitializeComponent();
 
@@ -56,25 +57,7 @@ namespace TestApp
             textBox8.BorderStyle = BorderStyle.None;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) //Card Number Input box
-        {
 
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e) //Card expiration MM/YY
-        {
-
-        }
-
-        private void textBox3_TextChanged(object sender, EventArgs e) //Card CCV #
-        {
-
-        }
-
-        private void textBox4_TextChanged(object sender, EventArgs e) // Card Holder Name
-        {
-
-        }
 
         private void button1_Click(object sender, EventArgs e) // Submit button should remove a listing from the menu (and database?) and return the user to the menu
         {
@@ -130,7 +113,7 @@ namespace TestApp
             SQLiteCommand cmnd = new SQLiteCommand();
             cmnd.Connection = con;
             //MessageBox.Show(@"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;");
-            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;";
+            cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO PURCHASE ( listingID, accountID, cardNum, expiration, cvv, cardHolder) VALUES (" + listingID + @", " + account.getAccountID().ToString() + @", " + textBox1.Text.GetHashCode().ToString() + @",'" + textBox2.Text.GetHashCode().ToString() + "', " + textBox3.Text.GetHashCode().ToString() + ", '" + textBox4.Text.GetHashCode().ToString() + @"'); COMMIT;";
             cmnd.ExecuteNonQuery();
 
 
@@ -144,30 +127,8 @@ namespace TestApp
 
         }
 
-        private void label2_Click(object sender, EventArgs e) //pull listing address
-        {
 
-        }
 
-        private void label3_Click(object sender, EventArgs e) // pull listing cost
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e) //pull listing photo to present it
-        {
-
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
 
     }
 }

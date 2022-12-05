@@ -18,9 +18,12 @@ namespace TestApp.Entity
         public PictureBox pictureBox;
         public TextBox adressTextBox;
         public TextBox costTextBox;
+        public RadioButton radioButton;
+        public TextBox rooms;
+        public TextBox bathRooms;
 
 
-        public Listing(int Id, int Sellerid, string Address, int Price, PictureBox pb, TextBox aTB, TextBox cTB)
+        public Listing(int Id, int Sellerid, string Address, int Price, PictureBox pb, TextBox aTB, TextBox cTB, RadioButton rb=null, TextBox rms = null, TextBox bthRms=null)
         {
             if (Id > 0)
                 id = Id;
@@ -33,6 +36,20 @@ namespace TestApp.Entity
             this.pictureBox = pb;
             this.adressTextBox = aTB;
             this.costTextBox = cTB;
+
+            if(rb != null)
+            {
+                this.radioButton = rb;
+            }
+            if (rms != null)
+            {
+                this.rooms = rms;
+            }
+            if (bthRms != null)
+            {
+                this.bathRooms = bthRms;
+            }
+
         }
 
         public int getId()

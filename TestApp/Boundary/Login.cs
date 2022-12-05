@@ -48,7 +48,7 @@ namespace TestApp
             {
                 LoginControl.AddLoginToDB(acc);
                 this.Hide();
-                new BuyMenu(acc.getAccountID()).Show();
+                new BuyMenu(acc).Show();
             }
             else if (acc.getAccountType().Equals("seller")) // Take them to seller menu
             {

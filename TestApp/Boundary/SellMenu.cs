@@ -25,7 +25,7 @@ namespace TestApp
             
             InitializeComponent();
 
-            // NOTE: Form must have AutoScroll == true so that contents become scrollable after pictures take up entire page, i.e. :
+            // NOTE: Form should have AutoScroll == true so that contents become scrollable after pictures take up entire page, i.e. :
             this.AutoScroll = true;
 
             this.account = acc;
