@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TestApp.Entity
 {
@@ -11,9 +12,15 @@ namespace TestApp.Entity
         private int id;
         private int sellerid;
         private string address;
-        private double price;
+        private int price;
 
-        public Listing(int Id, int Sellerid, string Address, double Price)
+        // These are used to make displaying in Sell Menu form more simple 
+        public PictureBox pictureBox;
+        public TextBox adressTextBox;
+        public TextBox costTextBox;
+
+
+        public Listing(int Id, int Sellerid, string Address, int Price, PictureBox pb, TextBox aTB, TextBox cTB)
         {
             if (Id > 0)
                 id = Id;
@@ -22,6 +29,10 @@ namespace TestApp.Entity
             address = Address;
             if (Price > 0)
                 price = Price;
+
+            this.pictureBox = pb;
+            this.adressTextBox = aTB;
+            this.costTextBox = cTB;
         }
 
         public int getId()
@@ -59,7 +70,7 @@ namespace TestApp.Entity
             return price;
         }
 
-        public void setPrice(double Price)
+        public void setPrice(int Price)
         {
             price = Price;
         }

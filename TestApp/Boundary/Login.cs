@@ -54,7 +54,7 @@ namespace TestApp
             {
                 LoginControl.AddLoginToDB(acc);
                 this.Hide();
-                new SellMenu(acc.getAccountID()).Show();//no longer throws login error
+                new SellMenu(acc).Show();//no longer throws login error
             }
             else // This should theoretically never trigger, but for completeness..
             {

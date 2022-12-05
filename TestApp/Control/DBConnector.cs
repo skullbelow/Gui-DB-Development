@@ -130,6 +130,28 @@ namespace TestApp.Control
         }
 
 
+        public static DataTable GetListings()
+        {
+            //Create SQLite connection and open it
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+
+
+
+            //query to obtain all rows in Listing table
+            string query = "SELECT * FROM Listing ;";
+            SQLiteCommand cmd = new SQLiteCommand(query, con);
+            cmd.Connection = con; // probably unnecessary 
+
+
+            DataTable dt = new DataTable(); // where query results will get stored
+            SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd); // Constructs a data adapter using the specified select command (i.e. cmd)
+            adapter.Fill(dt); // fill out data table with query results
+
+            return dt;
+        }
+
+
 
         public static void AddLoginToDB(Account acc)
         {
@@ -155,6 +177,19 @@ namespace TestApp.Control
             cmnd.CommandText = @"BEGIN TRANSACTION; INSERT INTO ACCESS (accountID, time, type) VALUES (" + acc.getAccountID().ToString() + ", '" + DateTime.Now.ToString() + "', 'logout'); COMMIT;";
             cmnd.ExecuteNonQuery();
             conn.Close();
+        }
+
+
+        public static IDataReader GetImageReader(DataRow row)
+        {
+            string imgQuery;
+            SQLiteCommand imgCmd;
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+            imgQuery = "SELECT image FROM Listing WHERE listingID = " + row.ItemArray[0].ToString() + " ;"; // grab picture from db
+            imgCmd = new SQLiteCommand(imgQuery, con);
+            imgCmd.Connection = con;
+            return imgCmd.ExecuteReader(); // reads byte data returned from query
         }
 
 

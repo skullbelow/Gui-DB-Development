@@ -11,16 +11,17 @@ using System.Data.SQLite;
 using System.Text.RegularExpressions;
 
 using System.IO; // Added for image to byte conversion (i.e. MemoryStream object in ImageToByte() )
+using TestApp.Entity;
 
 namespace TestApp
 {
     public partial class CreateListing : Form
     {
-        private int accountID;
+        private Account account;
 
-        public CreateListing(int aID)
+        public CreateListing(Account aID)
         {
-            this.accountID = aID;
+            this.account = aID;
             InitializeComponent();
         }
 
@@ -127,7 +128,7 @@ namespace TestApp
             SQLiteCommand cmnd = new SQLiteCommand();
             cmnd.Connection = con;
 
-            cmnd.CommandText = String.Format("BEGIN TRANSACTION; INSERT INTO Listing ( aID, cost, address, image, rooms, bathrooms) VALUES (" + accountID.ToString() + @", " + textBox2.Text + @", '" + textBox1.Text + @"', @0," + numericUpDown1.Value.ToString() + @", " + numericUpDown2.Value.ToString() + @"); COMMIT;"); 
+            cmnd.CommandText = String.Format("BEGIN TRANSACTION; INSERT INTO Listing ( aID, cost, address, image, rooms, bathrooms) VALUES (" + account.getAccountID().ToString() + @", " + textBox2.Text + @", '" + textBox1.Text + @"', @0," + numericUpDown1.Value.ToString() + @", " + numericUpDown2.Value.ToString() + @"); COMMIT;"); 
             SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Binary);
             param.Value = pic;
             cmnd.Parameters.Add(param);
@@ -152,7 +153,7 @@ namespace TestApp
              }*/
 
             this.Hide();
-            new SellMenu(accountID).Show();
+            new SellMenu(account).Show();
         }
 
 
