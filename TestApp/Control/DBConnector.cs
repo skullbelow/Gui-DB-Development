@@ -193,5 +193,42 @@ namespace TestApp.Control
         }
 
 
+
+        public static bool InsertListing(byte[] pic, Account account, string cost, string address, string rooms, string bathrooms)
+        {
+
+
+            DataTable dt = GetListings();
+
+            foreach(DataRow row in dt.Rows)
+            {
+                if(address.Equals(row.ItemArray[3].ToString())) // if the address is already being listed
+                {
+                    return true;
+                }
+            }
+
+
+
+            //after input validation we need to save the input as a new entry in the Listing table
+            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
+            con.Open();
+            SQLiteCommand cmnd = new SQLiteCommand();
+            cmnd.Connection = con;
+
+            cmnd.CommandText = String.Format("BEGIN TRANSACTION; INSERT INTO Listing ( aID, cost, address, image, rooms, bathrooms) VALUES (" + account.getAccountID().ToString() + @", " + cost + @", '" + address + @"', @0," + rooms + @", " + bathrooms + @"); COMMIT;");
+            SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Binary);
+            param.Value = pic;
+            cmnd.Parameters.Add(param);
+            cmnd.ExecuteNonQuery();
+
+            return false;
+            
+        }
+
+
+
+
+
     }
 }

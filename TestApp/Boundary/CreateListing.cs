@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 
 using System.IO; // Added for image to byte conversion (i.e. MemoryStream object in ImageToByte() )
 using TestApp.Entity;
+using TestApp.Control;
 
 namespace TestApp
 {
@@ -25,15 +26,9 @@ namespace TestApp
             InitializeComponent();
         }
 
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void button2_Click(object sender, EventArgs e) // Upload Button: this is used to intiate the upload of a listing image
         {
-            // Create image.
-            //Image newImage = Image.FromFile("C:\\Users\\genev\\OneDrive\\Pictures\\Houses\\635.jpg");
 
             String imgLocation = "";
             try
@@ -56,118 +51,43 @@ namespace TestApp
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) // address input box
-        {
 
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e) //cost input box
-        {
-
-        }
-
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e) //number of rooms
-        {
-
-        }
-
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e) //number of bathrooms
-        {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)// image display box
-        {
-
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void button1_Click(object sender, EventArgs e) //Submit Button: should validate the form, update the database, and return the seller to the seller menu
         {
-            // user input validation block
-            Regex r = new Regex("[a-zA-Z0-9,. ]+"); //address needs to accept commas, spaces, and periods as well
-            if (!r.IsMatch(textBox1.Text))
+
+            string validity = CreateListingControl.IsValid(textBox1.Text, textBox2.Text, Decimal.ToInt32(numericUpDown1.Value), Decimal.ToInt32(numericUpDown2.Value));
+            if (!validity.Equals("All Good!"))
             {
-                MessageBox.Show("Address can only be alphanumeric. Try again.");
-                return;// terminate early
+                MessageBox.Show(validity);
+                return; // terminiate early
             }
-            r = new Regex("^[0-9]+$"); //cost needs to accept only numbers
-            if (!r.IsMatch(textBox2.Text))
-            {
-                MessageBox.Show("Cost can only be numeric. Try again.");
-                return;// terminate early
-            }
-            if (!(Decimal.ToInt32(numericUpDown1.Value) < 11) && !(Decimal.ToInt32(numericUpDown2.Value) < 11))
-            {
-                MessageBox.Show("There can be no more than 10 rooms or 10 bathrooms. Try again.");
-                return;// terminate early
-            }
+
+
             try
             {
                 pictureBox1.ImageLocation.Equals(""); // this will throw exception if picture is not selected
             }
-            catch(Exception exc)
+            catch
             {
                 MessageBox.Show("You must upload a picture to create listing.");
                 return;// terminate early
             }
 
-
             Image photo = new Bitmap(pictureBox1.ImageLocation);
-            byte[] pic = ImageToByte(photo, System.Drawing.Imaging.ImageFormat.Jpeg);
 
+            if( CreateListingControl.InsertListing(photo,account,textBox2.Text,textBox1.Text,numericUpDown1.Value.ToString(),numericUpDown2.Value.ToString())) // In the event the address was already taken
+            {
+                MessageBox.Show("This address is already being listed.");
+                return;// terminate early
+            }
 
-
-            //after input validation we need to save the input as a new entry in the Listing table
-            SQLiteConnection con = new SQLiteConnection(@"data source = nAccountDb.db");
-            con.Open();
-            SQLiteCommand cmnd = new SQLiteCommand();
-            cmnd.Connection = con;
-
-            cmnd.CommandText = String.Format("BEGIN TRANSACTION; INSERT INTO Listing ( aID, cost, address, image, rooms, bathrooms) VALUES (" + account.getAccountID().ToString() + @", " + textBox2.Text + @", '" + textBox1.Text + @"', @0," + numericUpDown1.Value.ToString() + @", " + numericUpDown2.Value.ToString() + @"); COMMIT;"); 
-            SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Binary);
-            param.Value = pic;
-            cmnd.Parameters.Add(param);
-            cmnd.ExecuteNonQuery();
-
-            //for debugging purposes only
-            /*string nq = ("SELECT * FROM Listing");
-
-            SQLiteCommand cmd = new SQLiteCommand(nq, con);
-            //adapter
-            //datatable
-            DataTable dt = new DataTable();
-            SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-            adapter.Fill(dt);
-
-             foreach (DataRow row in dt.Rows) 
-             {
-                 foreach (DataColumn column in dt.Columns)
-                 {
-                     MessageBox.Show(row[column].ToString());
-                 }
-             }*/
 
             this.Hide();
             new SellMenu(account).Show();
         }
 
 
-
-        public byte[] ImageToByte(Image image, System.Drawing.Imaging.ImageFormat format)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                // Convert Image to byte[]
-                image.Save(ms, format);
-                byte[] imageBytes = ms.ToArray();
-                return imageBytes;
-            }
-        }
 
     }
 }
