@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using TestApp.Entity;
 using System.Data;
-using System.IO;
+using System.IO; // You must add this for File I/O when inserting pre-made houses
 
 namespace TestApp.Control
 {
@@ -80,9 +80,13 @@ namespace TestApp.Control
                     INSERT INTO LISTING (listingID, aID, cost, address, image, rooms, bathrooms) VALUES (3, 2, 370000, '321 tester road', (@IM3), 15, 6);
                     COMMIT;";
 
-                    byte[] imageData1 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\259.jpg");
-                    byte[] imageData2 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\635.jpg");
-                    byte[] imageData3 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\IMG_9333.jpg");
+                    //byte[] imageData1 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\259.jpg");
+                    //byte[] imageData2 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\635.jpg");
+                    //byte[] imageData3 = File.ReadAllBytes(@"C:\Users\genev\OneDrive\Documents\PlayGround\Gui-DB-Development\Houses\IMG_9333.jpg");
+                    byte[] imageData1 = File.ReadAllBytes(@"..\..\..\Houses\259.jpg");
+                    byte[] imageData2 = File.ReadAllBytes(@"..\..\..\Houses\635.jpg");
+                    byte[] imageData3 = File.ReadAllBytes(@"..\..\..\Houses\IMG_9333.jpg");
+
                     cmnd.Parameters.AddWithValue("@IM1", imageData1);
                     cmnd.Parameters.AddWithValue("@IM2", imageData2);
                     cmnd.Parameters.AddWithValue("@IM3", imageData3);
